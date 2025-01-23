@@ -5,7 +5,7 @@ on:
 jobs:
     deploy-staging:
         runs-on: ubuntu-latest
-        # environment: staging
+        environment: dev
         env:
             my-env-value: ${{vars.NAME || 'default value'}}
             linku: "hello"
