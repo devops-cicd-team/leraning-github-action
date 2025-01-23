@@ -1,31 +1,37 @@
 name: Working with Environments
 on:
     workflow_dispatch:
-
+env:
+    success: "my name"
 jobs:
     deploy-staging:
         runs-on: ubuntu-latest
         environment: dev
         env:
             my-env-value: ${{vars.NAME || 'default value'}}
-            linku: "hello"
+            success: "ith success ane job"
         steps:
             - name: "echo vars"
               run: |
                   echo "hi ${{ env.my-env-value }}"
                   echo "hi ${{ vars.NAME }}"
-    # e2e-tests:
-    #     runs-on: ubuntu-latest
-    #     needs: deploy-staging
-    #     steps:
-    #         - name: E2E tests
-    #           run: echo "Running E2E"
-    # deploy-prod:
-    #     runs-on: ubuntu-latest
-    #     needs: e2e-tests
-    #     environment: prod
-    #     env:
-    #         my-env-value: ${{vars.MY_ENV_VALUE || 'default value'}}
-    #     steps:
-    #         - name: Echo vars
-    #           run: echo "Deploying to Prod"
+                  echo "hi ${{ env.success }}"
+
+    e2e-tests:
+        runs-on: ubuntu-latest
+        needs: deploy-staging
+        steps:
+            - name: E2E tests
+              run: echo "Running E2E"
+            - run: echo "hi ${{ env.success }}"
+
+    deploy-prod:
+        runs-on: ubuntu-latest
+        needs: e2e-tests
+        environment: prod
+        env:
+            my-env-value: ${{vars.NAME || 'default value'}}
+        steps:
+            - name: Echo vars
+              run: echo "Deploying to Prod"
+            - run: echo "hi ${{ env.success }}"
